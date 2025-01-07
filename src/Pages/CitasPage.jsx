@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { citas as initialCitas } from "../Data";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import SearchAndFilter from "./SearchAndFilter";
 
 const CitasPage = () => {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
-  const [citas, setCitas] = useState(initialCitas);
+  const [citas, setCitas] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [newCita, setNewCita] = useState({
     paciente: "",
@@ -20,16 +20,34 @@ const CitasPage = () => {
     { value: "Cancelada", label: "Canceladas" },
   ];
 
+  // Cargar citas desde el backend
+  useEffect(() => {
+    const fetchCitas = async () => {
+      try {
+        const response = await axios.get("http://localhost:5000/api/citas");
+        setCitas(response.data);
+      } catch (error) {
+        console.error("Error al cargar citas:", error);
+      }
+    };
+    fetchCitas();
+  }, []);
+
   const filteredCitas = citas.filter(
     (cita) =>
       cita.paciente.toLowerCase().includes(search.toLowerCase()) &&
       (!filter || cita.estado === filter)
   );
 
-  const handleAddCita = () => {
-    setCitas([...citas, { id: citas.length + 1, ...newCita }]);
-    setShowModal(false);
-    setNewCita({ paciente: "", fecha: "", hora: "", estado: "Pendiente" });
+  const handleAddCita = async () => {
+    try {
+      const response = await axios.post("http://localhost:5000/api/citas", newCita);
+      setCitas((prev) => [...prev, response.data]);
+      setShowModal(false);
+      setNewCita({ paciente: "", fecha: "", hora: "", estado: "Pendiente" });
+    } catch (error) {
+      console.error("Error al agregar cita:", error);
+    }
   };
 
   return (
@@ -61,7 +79,7 @@ const CitasPage = () => {
         </thead>
         <tbody>
           {filteredCitas.map((cita) => (
-            <tr key={cita.id} className="border-b">
+            <tr key={cita._id} className="border-b">
               <td className="px-4 py-2">{cita.paciente}</td>
               <td className="px-4 py-2">{cita.fecha}</td>
               <td className="px-4 py-2">{cita.hora}</td>
@@ -170,5 +188,6 @@ const CitasPage = () => {
 };
 
 export default CitasPage;
+
 
 

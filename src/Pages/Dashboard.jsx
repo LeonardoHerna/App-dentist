@@ -21,7 +21,7 @@ const Dashboard = () => {
           <ul className="space-y-2">
             <li>
               <NavLink
-                to="/"
+                to="/dashboard"
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive ? "bg-gray-200 text-gray-900 font-semibold" : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
@@ -36,7 +36,7 @@ const Dashboard = () => {
             </li>
             <li>
               <NavLink
-                to="/pacientes"
+                to="/dashboard/pacientes"
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive ? "bg-gray-200 text-gray-900 font-semibold" : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
@@ -48,7 +48,7 @@ const Dashboard = () => {
             </li>
             <li>
               <NavLink
-                to="/citas"
+                to="/dashboard/citas"
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive ? "bg-gray-200 text-gray-900 font-semibold" : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
@@ -61,7 +61,7 @@ const Dashboard = () => {
 
             <li>
               <NavLink
-                to="/configuracion"
+                to="/dashboard/configuracion"
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive ? "bg-gray-200 text-gray-900 font-semibold" : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
@@ -86,13 +86,13 @@ const Dashboard = () => {
               <GraficaCitas />
             </div>
           } />
-          <Route path="/pacientes" element={<PacientesPage />} />
-          <Route path="/citas" element={<CitasPage />} />
-          <Route path="/configuracion" element={<ConfiguracionPage />} />
-          <Route path="/AccesosRapidos" element={<AccesosRapidos />} />
-          <Route path="/notificaciones" element={<Notificaciones />} />
-          <Route path="/CalendarioCitas" element={<CalendarioCitas />} />
-          <Route path="/grafica-citas" element={<GraficaCitas />} />
+          <Route path="pacientes" element={<PacientesPage />} />
+          <Route path="citas" element={<CitasPage />} />
+          <Route path="configuracion" element={<ConfiguracionPage />} />
+          <Route path="AccesosRapidos" element={<AccesosRapidos />} />
+          <Route path="notificaciones" element={<Notificaciones />} />
+          <Route path="CalendarioCitas" element={<CalendarioCitas />} />
+          <Route path="grafica-citas" element={<GraficaCitas />} />
         </Routes>
       </main>
     </div>

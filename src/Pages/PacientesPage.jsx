@@ -1,13 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SearchAndFilter from "./SearchAndFilter";
 
 const PacientesPage = () => {
-  // Estado para los pacientes
-  const [pacientes, setPacientes] = useState([
-    { id: 1, nombre: "Juan Pérez", telefono: "123456789", proximaCita: "2024-12-23" },
-    { id: 2, nombre: "María López", telefono: "987654321", proximaCita: "2024-12-30" },
-  ]);
-
+  const [pacientes, setPacientes] = useState([]);
   const [search, setSearch] = useState("");
   const [nuevoPaciente, setNuevoPaciente] = useState({
     nombre: "",
@@ -15,34 +10,60 @@ const PacientesPage = () => {
     proximaCita: "",
   });
 
-  const filteredPacientes = pacientes.filter((paciente) =>
-    paciente.nombre.toLowerCase().includes(search.toLowerCase())
-  );
+  // Cargar pacientes al montar el componente
+  useEffect(() => {
+    const fetchPacientes = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/pacientes");
+        const data = await response.json();
+        setPacientes(data);
+      } catch (error) {
+        console.error("Error al cargar pacientes:", error);
+      }
+    };
+    fetchPacientes();
+  }, []);
 
   // Función para agregar un paciente
-  const agregarPaciente = () => {
+  const agregarPaciente = async () => {
     if (nuevoPaciente.nombre && nuevoPaciente.telefono && nuevoPaciente.proximaCita) {
-      const nuevo = {
-        id: Date.now(1), // Genera un ID único
-        ...nuevoPaciente,
-      };
-      setPacientes((prev) => [...prev, nuevo]);
-      setNuevoPaciente({ nombre: "", telefono: "", proximaCita: "" }); // Limpiar formulario
+      try {
+        const response = await fetch("http://localhost:5000/api/pacientes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(nuevoPaciente),
+        });
+        const data = await response.json();
+        setPacientes((prev) => [...prev, data]);
+        setNuevoPaciente({ nombre: "", telefono: "", proximaCita: "" }); // Limpiar formulario
+      } catch (error) {
+        console.error("Error al agregar paciente:", error);
+      }
     } else {
       alert("Todos los campos son obligatorios");
     }
   };
 
   // Función para eliminar un paciente
-  const eliminarPaciente = (id) => {
-    setPacientes((prev) => prev.filter((paciente) => paciente.id !== id));
+  const eliminarPaciente = async (id) => {
+    try {
+      await fetch(`http://localhost:5000/api/pacientes/${id}`, { method: "DELETE" });
+      setPacientes((prev) => prev.filter((paciente) => paciente._id !== id));
+    } catch (error) {
+      console.error("Error al eliminar paciente:", error);
+    }
   };
+
+  // Filtrar pacientes por nombre
+  const filteredPacientes = pacientes.filter((paciente) =>
+    paciente.nombre.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-800">Pacientes</h1>
       <SearchAndFilter search={search} setSearch={setSearch} />
-      
+
       {/* Formulario para agregar un nuevo paciente */}
       <div className="my-4 p-4 bg-gray-100 rounded-lg shadow">
         <h2 className="text-lg font-bold">Agregar Nuevo Paciente</h2>
@@ -75,7 +96,7 @@ const PacientesPage = () => {
           ➕ Agregar Paciente
         </button>
       </div>
-      
+
       {/* Tabla de pacientes */}
       <table className="table-auto w-full mt-4 bg-white shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-200">
@@ -89,14 +110,14 @@ const PacientesPage = () => {
         </thead>
         <tbody>
           {filteredPacientes.map((paciente) => (
-            <tr key={paciente.id} className="border-b">
-              <td className="px-4 py-2">{paciente.id}</td>
+            <tr key={paciente._id} className="border-b">
+              <td className="px-4 py-2">{paciente._id}</td>
               <td className="px-4 py-2">{paciente.nombre}</td>
               <td className="px-4 py-2">{paciente.telefono}</td>
               <td className="px-4 py-2">{paciente.proximaCita}</td>
               <td className="px-4 py-2">
                 <button
-                  onClick={() => eliminarPaciente(paciente.id)}
+                  onClick={() => eliminarPaciente(paciente._id)}
                   className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                 >
                   🗑️ Eliminar
@@ -118,4 +139,5 @@ const PacientesPage = () => {
 };
 
 export default PacientesPage;
+
 

@@ -1,31 +1,23 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
-const citaRoutes = require('./Routes/CitaRoutes');
+const express = require("express");
+const dotenv = require("dotenv");
+const cors = require("cors");
+const connectDB = require("./Config/db");
+const authRoutes = require("./Routes/authRoutes");
+
+dotenv.config();
+connectDB();
 
 const app = express();
-const port = process.env.PORT || 5000;
 
-// Middleware para analizar el cuerpo de las solicitudes
+app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
 
-// Rutas de citas
-app.use('/api', citaRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/pacientes", require("./Routes/pacientesRoutes"));
+app.use("/api/citas", require("./Routes/citasRoutes"));
 
-// Conexión a MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('Conectado a MongoDB'))
-.catch((err) => console.log('Error de conexión a MongoDB:', err));
-
-// Rutas
-app.get('/', (req, res) => {
-  res.send('Bienvenido al backend de la app!');
-});
-
-// Inicia el servidor
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
