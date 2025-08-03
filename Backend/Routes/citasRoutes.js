@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const citasController = require("../controllers/citasController");
+const citasController = require("../Controllers/citasController");
 
 router.get("/", citasController.getCitas);
 router.post("/", citasController.createCita);
