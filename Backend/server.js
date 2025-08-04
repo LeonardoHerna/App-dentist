@@ -9,7 +9,11 @@ connectDB();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://app-dentist.onrender.com",
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
