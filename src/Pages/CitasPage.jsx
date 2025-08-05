@@ -24,7 +24,7 @@ const CitasPage = () => {
   useEffect(() => {
     const fetchCitas = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/citas");
+        const response = await axios.get("https://app-dentist.onrender.com");
         setCitas(response.data);
       } catch (error) {
         console.error("Error al cargar citas:", error);
@@ -41,7 +41,7 @@ const CitasPage = () => {
 
   const handleAddCita = async () => {
     try {
-      const response = await axios.post("http://localhost:5000/api/citas", newCita);
+      const response = await axios.post("https://app-dentist.onrender.com", newCita);
       setCitas((prev) => [...prev, response.data]);
       setShowModal(false);
       setNewCita({ paciente: "", fecha: "", hora: "", estado: "Pendiente" });
