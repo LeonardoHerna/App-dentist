@@ -17,7 +17,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch("https://app-dentist.onrender.com", {
+      const response = await fetch("https://app-dentist.onrender.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

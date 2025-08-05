@@ -21,17 +21,31 @@ const CitasPage = () => {
   ];
 
   // Cargar citas desde el backend
-  useEffect(() => {
-    const fetchCitas = async () => {
-      try {
-        const response = await axios.get("https://app-dentist.onrender.com");
-        setCitas(response.data);
-      } catch (error) {
-        console.error("Error al cargar citas:", error);
+useEffect(() => {
+  const fetchCitas = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.warn("No se encontró un token. El usuario no está autenticado.");
+        return;
       }
-    };
-    fetchCitas();
-  }, []);
+
+      const response = await axios.get("https://app-dentist.onrender.com/api/citas/citas", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      setCitas(response.data);
+    } catch (error) {
+      console.error("Error al cargar citas:", error);
+    }
+  };
+
+  fetchCitas();
+}, []);
+
 
   const filteredCitas = citas.filter(
     (cita) =>
@@ -39,16 +53,35 @@ const CitasPage = () => {
       (!filter || cita.estado === filter)
   );
 
-  const handleAddCita = async () => {
-    try {
-      const response = await axios.post("https://app-dentist.onrender.com", newCita);
-      setCitas((prev) => [...prev, response.data]);
-      setShowModal(false);
-      setNewCita({ paciente: "", fecha: "", hora: "", estado: "Pendiente" });
-    } catch (error) {
-      console.error("Error al agregar cita:", error);
+  
+const handleAddCita = async () => {
+  try {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      console.warn("No hay token. El usuario no está autenticado.");
+      return;
     }
-  };
+
+    const response = await axios.post(
+      "https://app-dentist.onrender.com/api/citas",
+      newCita,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setCitas((prev) => [...prev, response.data]);
+    setShowModal(false);
+    setNewCita({ paciente: "", fecha: "", hora: "", estado: "Pendiente" });
+
+  } catch (error) {
+    console.error("Error al agregar cita:", error);
+  }
+};
+
 
   return (
     <div>
