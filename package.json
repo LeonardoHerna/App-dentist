@@ -2,7 +2,7 @@
   "name": "dentist-app",
   "version": "0.1.0",
   "homepage": "https://LeonardoHerna.github.io/App-dentist",
-  "private": true,
+  "private": false,
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@popperjs/core": "^2.11.6",
