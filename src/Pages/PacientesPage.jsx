@@ -14,7 +14,7 @@ const PacientesPage = () => {
   useEffect(() => {
     const fetchPacientes = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/pacientes");
+        const response = await fetch("https://app-dentist.onrender.com/api/pacientes");
         const data = await response.json();
         setPacientes(data);
       } catch (error) {
