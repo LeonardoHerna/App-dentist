@@ -31,7 +31,7 @@ useEffect(() => {
         return;
       }
 
-      const response = await axios.get("https://app-dentist.onrender.com/api/citas/citas", {
+      const response = await axios.get("https://app-dentist.onrender.com/api/citas", {
         headers: {
           Authorization: `Bearer ${token}`
         }
