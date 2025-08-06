@@ -10,7 +10,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: "https://github.com/LeonardoHerna/App-dentist",
+  origin: ["http://localhost:3000","https://leonardoherna.github.io"],
   credentials: true
 }));
 

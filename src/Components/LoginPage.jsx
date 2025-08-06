@@ -1,46 +1,54 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    if (!email || !password) {
-      setError("Por favor, completa todos los campos.");
+  if (!email || !password) {
+    setError("Por favor, completa todos los campos.");
+    return;
+  }
+
+  try {
+    const response = await fetch("https://app-dentist.onrender.com/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    // Intentamos parsear el cuerpo de la respuesta
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      setError("Respuesta inesperada del servidor.");
       return;
     }
 
-    try {
-      const response = await fetch("https://app-dentist.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          alert("Inicio de sesión exitoso");
-          navigate("/dashboard"); 
-        } else {
-          setError("No se recibió un token válido.");
-        }
+    if (response.ok) {
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        alert("Inicio de sesión exitoso");
+        navigate("/dashboard");
       } else {
-        setError(data.message || "Error en el inicio de sesión.");
+        setError("No se recibió un token válido.");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      setError("Error al conectarse con el servidor.");
+    } else {
+      setError(data.message || "Error en el inicio de sesión.");
     }
-  };
+  } catch (error) {
+    console.error("Error:", error);
+    setError("Error al conectarse con el servidor.");
+  }
+};
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
