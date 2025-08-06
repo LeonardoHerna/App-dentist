@@ -28,7 +28,7 @@ const PacientesPage = () => {
   const agregarPaciente = async () => {
     if (nuevoPaciente.nombre && nuevoPaciente.telefono && nuevoPaciente.proximaCita) {
       try {
-        const response = await fetch("http://localhost:5000/api/pacientes", {
+        const response = await fetch("https://app-dentist.onrender.com/api/pacientes", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(nuevoPaciente),
@@ -47,7 +47,7 @@ const PacientesPage = () => {
   // Función para eliminar un paciente
   const eliminarPaciente = async (id) => {
     try {
-      await fetch(`http://localhost:5000/api/pacientes/${id}`, { method: "DELETE" });
+      await fetch(`https://app-dentist.onrender.com/api/pacientes/${id}`, { method: "DELETE" });
       setPacientes((prev) => prev.filter((paciente) => paciente._id !== id));
     } catch (error) {
       console.error("Error al eliminar paciente:", error);
