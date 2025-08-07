@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/App-dentist/static/css/main.4fe2744c.css",
-    "main.js": "/App-dentist/static/js/main.9b9855ee.js",
+    "main.css": "/App-dentist/static/css/main.5829b029.css",
+    "main.js": "/App-dentist/static/js/main.4ef0a887.js",
     "index.html": "/App-dentist/index.html",
-    "main.4fe2744c.css.map": "/App-dentist/static/css/main.4fe2744c.css.map",
-    "main.9b9855ee.js.map": "/App-dentist/static/js/main.9b9855ee.js.map"
+    "main.5829b029.css.map": "/App-dentist/static/css/main.5829b029.css.map",
+    "main.4ef0a887.js.map": "/App-dentist/static/js/main.4ef0a887.js.map"
   },
   "entrypoints": [
-    "static/css/main.4fe2744c.css",
-    "static/js/main.9b9855ee.js"
+    "static/css/main.5829b029.css",
+    "static/js/main.4ef0a887.js"
   ]
 }
