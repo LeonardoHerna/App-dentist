@@ -1,0 +1,165 @@
+import React , { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+
+const Registro = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    telefono: "",
+    password: "",
+    confirmarPassword: "",
+  });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    const { name, email, telefono, password, confirmarPassword } = formData;
+
+    if (!name || !email || !telefono || !password || !confirmarPassword) {
+      setError("Por favor, completa todos los campos.");
+      return;
+    }
+
+    if (password !== confirmarPassword) {
+      setError("Las contraseñas no coinciden.");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      setError("Por favor, ingresa un correo válido.");
+      return;
+    }
+
+    if (!/^\d{10}$/.test(telefono)) {
+      setError("Por favor, ingresa un número de teléfono válido.");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://app-dentist.onrender.com/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, telefono, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Registro exitoso");
+        navigate("/login");
+      } else {
+        setError(data.message || "Error en el registro.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Error al conectarse con el servidor.");
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">AgenDent</h1>
+        <p className="text-gray-600 text-center mb-6">
+          Regístrate para comenzar a agendar tus citas.
+        </p>
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label htmlFor="nombre" className="block text-sm font-medium text-gray-700">
+              Nombre
+            </label>
+            <input
+              type="text"
+              id="nombre"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Correo Electrónico
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="telefono" className="block text-sm font-medium text-gray-700">
+              Teléfono
+            </label>
+            <input
+              type="tel"
+              id="telefono"
+              name="telefono"
+              value={formData.telefono}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Contraseña
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="confirmarPassword" className="block text-sm font-medium text-gray-700">
+              Confirmar Contraseña
+            </label>
+            <input
+              type="password"
+              id="confirmarPassword"
+              name="confirmarPassword"
+              value={formData.confirmarPassword}
+              onChange={handleChange}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300"
+          >
+            Registrarse
+          </button>
+          {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Registro;
+
