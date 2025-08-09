@@ -46,7 +46,7 @@ const CalendarioCitas = () => {
   };
 
   return (
-    <div className="bg-white shadow-md p-4 rounded-lg">
+    <div className="bg-white shadow-md p-4 rounded-lg mt-20 h-110">
       <h3 className="text-xl font-semibold text-gray-800 mb-4">Citas del Día</h3>
 
       {/* Calendario de citas */}

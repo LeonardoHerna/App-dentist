@@ -15,8 +15,8 @@ const dataIngresos = {
 };
 
 const GraficaCitas = () => (
-  <div className="bg-white shadow-md p-4 rounded-lg">
-    <h3 className="text-xl font-semibold text-gray-800 mb-4">Estado de las Citas</h3>
+  <div className="bg-white shadow-md p-10 rounded-lg w-240 h-230 mt-20 ml-20 mr-20">
+    <h3 className="text-2xl font-semibold text-gray-800 mb-4">Estado de las Citas</h3>
     <Doughnut data={dataIngresos} />
   </div>
 );

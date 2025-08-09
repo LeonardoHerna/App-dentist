@@ -1,6 +1,6 @@
 import React , { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { Link } from "react-router-dom";
 
 const Registro = () => {
   const [formData, setFormData] = useState({
@@ -66,8 +66,8 @@ const Registro = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+    <div className="min-h-[60vh] bg-gray-100 flex flex-col items-center justify-center">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md mt-2 mb-5">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">AgenDent</h1>
         <p className="text-gray-600 text-center mb-6">
           Regístrate para comenzar a agendar tus citas.
@@ -155,8 +155,15 @@ const Registro = () => {
             Registrarse
           </button>
           {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+            
         </form>
       </div>
+       <Link
+        to="/"
+        className="inline-flex items-center px-4 py-2  font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition mb-10"
+      >
+        ← Volver al inicio
+      </Link>
     </div>
   );
 };

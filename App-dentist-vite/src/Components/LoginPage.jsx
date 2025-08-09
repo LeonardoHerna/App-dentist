@@ -1,54 +1,62 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  setError("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  if (!email || !password) {
-    setError("Por favor, completa todos los campos.");
-    return;
-  }
-
-  try {
-    const response = await fetch("https://app-dentist.onrender.com/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    // Intentamos parsear el cuerpo de la respuesta
-    let data;
-    try {
-      data = await response.json();
-    } catch {
-      setError("Respuesta inesperada del servidor.");
+    if (!email || !password) {
+      setError("Por favor, completa todos los campos.");
       return;
     }
 
-    if (response.ok) {
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-        alert("Inicio de sesión exitoso");
-        navigate("/dashboard");
-      } else {
-        setError("No se recibió un token válido.");
+    try {
+      const response = await fetch("https://app-dentist.onrender.com/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        setError("Respuesta inesperada del servidor.");
+        return;
       }
-    } else {
-      setError(data.message || "Error en el inicio de sesión.");
+
+      if (response.ok) {
+        const { token, rol } = data;
+
+        if (token && rol) {
+          localStorage.setItem("token", token);
+          localStorage.setItem("rol", rol);
+
+          alert("Inicio de sesión exitoso");
+
+          // Redirección basada en el rol
+          if (data.rol?.toLowerCase() === "admin") {
+            navigate("/admin");
+          } else {
+            navigate("/dashboard");
+          }
+        } else {
+          setError("No se recibió un token o rol válido.");
+        }
+      } else {
+        setError(data.message || "Error en el inicio de sesión.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("Error al conectarse con el servidor.");
     }
-  } catch (error) {
-    console.error("Error:", error);
-    setError("Error al conectarse con el servidor.");
-  }
-};
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
@@ -109,11 +117,14 @@ const handleSubmit = async (e) => {
           </p>
         </div>
       </div>
+         <Link
+        to="/"
+        className="inline-flex items-center px-4 py-2 mt-4 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+      >
+        ← Volver al inicio
+      </Link>
     </div>
   );
 };
 
 export default LoginPage;
-
-
-
