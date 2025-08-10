@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "./Components/logo
+  jpg";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
@@ -38,8 +40,8 @@ const LandingPage = () => {
       <nav className="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <img
-  src="./Logo.jpg"
-  alt="Logo AgenDent"
+  src="{logo}"
+  alt="{Logo}"
   className="h-12 w-auto object-contain"
 />
 
