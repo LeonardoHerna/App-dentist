@@ -27,13 +27,9 @@ const handleSubmit = async (e) => {
       localStorage.setItem("rol", rol);
 
       alert("Inicio de sesión exitoso");
+         navigate("/dashboard");
 
-      // Redirección según rol
-      if (rol.toLowerCase() === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
+  
     } else {
       setError(message || "No se recibió un token o rol válido.");
     }
