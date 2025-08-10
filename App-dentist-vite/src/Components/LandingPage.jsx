@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "./Components/logo
-  jpg";
+import logo from "./Components/Logo.jpg";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
