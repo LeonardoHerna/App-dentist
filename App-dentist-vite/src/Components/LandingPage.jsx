@@ -38,7 +38,7 @@ const LandingPage = () => {
       <nav className="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <img
-  src="./Logo.png"
+  src="./Logo.jpg"
   alt="Logo AgenDent"
   className="h-12 w-auto object-contain"
 />
