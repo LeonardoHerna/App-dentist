@@ -1,6 +1,7 @@
 import React , { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import API from "../Services/api";
 
 const Registro = () => {
   const [formData, setFormData] = useState({
@@ -43,26 +44,27 @@ const Registro = () => {
       setError("Por favor, ingresa un número de teléfono válido.");
       return;
     }
+try {
+  const { data } = await API.post("/auth/register", {
+    name,
+    email,
+    telefono,
+    password,
+  });
+  
+  alert(data.message || "Registro exitoso");
+  navigate("/login");
+ 
+} catch (error) {
+  console.error("Error:", error);
 
-    try {
-      const response = await fetch("https://app-dentist.onrender.com/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, telefono, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Registro exitoso");
-        navigate("/login");
-      } else {
-        setError(data.message || "Error en el registro.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      setError("Error al conectarse con el servidor.");
-    }
+  if (error.response) {
+    setError(error.response.data?.message || "Error en el registro.");
+  } else {
+    setError("Error al conectarse con el servidor.");
+  }
+}
+   
   };
 
   return (

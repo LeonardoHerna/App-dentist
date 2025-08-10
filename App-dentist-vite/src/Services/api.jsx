@@ -2,10 +2,9 @@ import axios from "axios";
 
 const API = axios.create({
   baseURL:
-    process.env.NODE_ENV === "production"
-      ? "https://app-dentist.onrender.com"
-      : "http://localhost:5000",
+    import.meta.env.MODE === "production"
+      ? import.meta.env.VITE_API_URL_PROD
+      : import.meta.env.VITE_API_URL_DEV,
 });
-
 
 export default API;

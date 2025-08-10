@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../Services/api";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -7,57 +8,47 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    if (!email || !password) {
-      setError("Por favor, completa todos los campos.");
-      return;
-    }
+  if (!email || !password) {
+    setError("Por favor, completa todos los campos.");
+    return;
+  }
 
-    try {
-      const response = await fetch("https://app-dentist.onrender.com/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+  try {
+    const { data } = await API.post("/auth/login", { email, password });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch {
-        setError("Respuesta inesperada del servidor.");
-        return;
-      }
+    const { token, rol, message } = data;
 
-      if (response.ok) {
-        const { token, rol } = data;
+    if (token && rol) {
+      localStorage.setItem("token", token);
+      localStorage.setItem("rol", rol);
 
-        if (token && rol) {
-          localStorage.setItem("token", token);
-          localStorage.setItem("rol", rol);
+      alert("Inicio de sesión exitoso");
 
-          alert("Inicio de sesión exitoso");
-
-          // Redirección basada en el rol
-          if (data.rol?.toLowerCase() === "admin") {
-            navigate("/admin");
-          } else {
-            navigate("/dashboard");
-          }
-        } else {
-          setError("No se recibió un token o rol válido.");
-        }
+      // Redirección según rol
+      if (rol.toLowerCase() === "admin") {
+        navigate("/admin");
       } else {
-        setError(data.message || "Error en el inicio de sesión.");
+        navigate("/dashboard");
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } else {
+      setError(message || "No se recibió un token o rol válido.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+
+    if (error.response) {
+      // El servidor respondió con un código de error
+      setError(error.response.data?.message || "Error en el inicio de sesión.");
+    } else {
+      // El error ocurrió antes de recibir respuesta (conexión, CORS, etc.)
       setError("Error al conectarse con el servidor.");
     }
-  };
-
+  }
+};
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
       <div className="text-center mb-8">
