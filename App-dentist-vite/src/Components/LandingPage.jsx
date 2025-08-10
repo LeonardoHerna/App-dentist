@@ -37,7 +37,11 @@ const LandingPage = () => {
       {/* Navbar */}
       <nav className="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-[#0d80f2]">AgenDent</h1>
+          <img
+  src="./Logo.png"
+  alt="Logo AgenDent"
+  className="h-12 w-auto object-contain"
+/>
 
           <div className="flex items-center space-x-4 mr-4 ml-4 mt-4 mb-4">
             <Link
