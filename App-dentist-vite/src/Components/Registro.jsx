@@ -2,6 +2,7 @@ import React , { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import API from "../Services/api";
+import logo from "../assets/Logo.png";
 
 const Registro = () => {
   const [formData, setFormData] = useState({
@@ -70,7 +71,14 @@ try {
   return (
     <div className="min-h-[60vh] bg-gray-100 flex flex-col items-center justify-center">
       <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-md mt-2 mb-5">
-        <h1 className="text-2xl font-bold text-gray-800 mb-4 text-center">AgenDent</h1>
+        <div className=" p-4  flex flex-col justify-center items-center mb-5">
+              <img
+                src={logo}
+                alt={logo}
+                className="h-12 w-auto object-contain rounded-lg"
+              />
+          <h2 className="text-2xl font-bold text-gray-800">AgenDent</h2>
+        </div>
         <p className="text-gray-600 text-center mb-6">
           Regístrate para comenzar a agendar tus citas.
         </p>

@@ -3,6 +3,8 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./Config/db");
 const authRoutes = require("./Routes/authRoutes");
+const adminRoutes = require("./Routes/adminRoutes");
+const emailRoutes = require("./Routes/emailRoutesCta");
 
 dotenv.config();
 connectDB();
@@ -10,7 +12,7 @@ connectDB();
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:3000","https://leonardoherna.github.io"],
+  origin: ["http://localhost:5173", "https://leonardoherna.github.io"],
   credentials: true
 }));
 
@@ -20,6 +22,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRoutes);
 app.use("/api/pacientes", require("./Routes/pacientesRoutes"));
 app.use("/api/citas", require("./Routes/citasRoutes"));
+app.use("/api/admin", adminRoutes);
+app.use("/api/email", require("./Routes/emailRoutes"));
+app.use("/api/emailCta", emailRoutes);
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

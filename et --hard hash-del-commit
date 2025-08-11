@@ -1,0 +1,31 @@
+[33mc8cddbb[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Migrado proyecto de Create React App a Vite
+[33m464c09b[m Solo cambios de style
+[33md2baecd[m Cambio en style
+[33m5758079[m Cambios
+[33m8efbf22[m Cambios de style
+[33m73811a8[m Cambio en fetch de citasPage
+[33m3b30477[m Cambios en fetch
+[33mac1536e[m Cambio en fetch de PacientesPage
+[33m1dd7dcc[m Cambios varios
+[33mc1f22e1[m Cambio en loginPage, Registro, Citaspage y db
+[33m48a7175[m Cambio en rutas de fetch y axios
+[33m4da5877[m Cambios en  app.js
+[33m0d7fc38[m Cambio en route dashboard
+[33mb245dd1[m Cambio ruta en App.js
+[33m68b8416[m Actualizar package.json: private a false
+[33m5ec3c1c[m Cambio de react-router
+[33m3b49900[m Init repo
+[33m294b6fe[m Subo cambios y actualizo configuración para deploy
+[33m7819011[m Agrega homepage y scripts deploy para GitHub Pages
+[33m72b1ac5[m Agrego conexio del frontend con backend
+[33mf3d6380[m Create jekyll-gh-pages.yml
+[33md5f5e9b[m Eliminar node_modules del repo
+[33m434bb59[m Corregido nombre de carpeta Controllers
+[33m6d82e14[m Eliminar node_modules del repositorio
+[33m87ceb29[m Renombrar temp.js a server.js
+[33md9ec43c[m Renombrar Server.js a temp.js
+[33me151b3f[m Elimino archivo .ENV del repo y lo ignoro en git
+[33m91e6cde[m Se conecto el frontend con el Backend y base de datos moongo DB
+[33m2b704f9[m Agregando archivos de backend y algunos cambios
+[33m8458472[m Agregando cambios locales
+[33m8b6a45f[m Initial commit: Set up Dentist App
