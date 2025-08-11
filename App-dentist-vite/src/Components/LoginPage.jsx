@@ -19,8 +19,11 @@ const handleSubmit = async (e) => {
 
   try {
     const { data } = await API.post("/auth/login", { email, password });
+    console.log(data)
+    
 
     const { token, rol, message } = data;
+
 
     if (token && rol) {
       localStorage.setItem("token", token);
