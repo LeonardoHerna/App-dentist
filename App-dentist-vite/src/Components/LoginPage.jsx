@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../Services/api";
+import logo from "../assets/Logo.png";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -50,11 +51,16 @@ const handleSubmit = async (e) => {
 };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">
-          <span className="text-blue-500">AgenDent</span>
-        </h1>
-        <p className="text-gray-600 mt-2 text-lg">
+      <div className="flex flex-col items-center text-center">
+      <img
+    src={logo}
+    alt="Logo"
+    className="h-24 w-auto object-contain mb-2 rounded-lg" 
+  />
+  <h1 className="text-4xl font-bold text-gray-800">
+    AgenDent
+  </h1>
+        <p className="text-gray-600 mt-2 mb-5 text-lg">
           ¡Organiza tus citas fácilmente y con confianza!
         </p>
       </div>

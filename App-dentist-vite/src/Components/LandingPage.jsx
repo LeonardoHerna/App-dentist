@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../Logo.jpg";
+import logo from "../assets/Logo.png";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
@@ -36,29 +36,36 @@ const LandingPage = () => {
   return (
     <div className="relative flex flex-col min-h-screen bg-slate-50 justify-between overflow-x-hidden font-sans">
       {/* Navbar */}
-      <nav className="w-full bg-white shadow-sm fixed top-0 left-0 z-50">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <img
-  src="{logo}"
-  alt="{Logo}"
-  className="h-12 w-auto object-contain"
-/>
+      <nav className="  w-full bg-white shadow-sm fixed top-0 left-0 z-50">
 
-          <div className="flex items-center space-x-4 mr-4 ml-4 mt-4 mb-4">
-            <Link
-              to="/login"
-              className="bg-[#0d80f2] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer"
-            >
-              Iniciar sesión
-            </Link>
-            <Link
-              to="/Registro"
-              className="bg-[#0d80f2] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer"
-            >
-              Crear cuenta
-            </Link>
-          </div>
-        </div>
+<div className="max-w-7xl mx-auto flex justify-between items-center">
+  <div className="flex items-center gap-x-2 ml-4">
+    <img
+      src={logo}
+      alt={logo}
+      className="h-12 w-auto object-contain rounded-lg"
+    />
+    <h1 className="text-xl font-bold">AgenDent</h1>
+  </div>
+
+  {/* Derecha: botones */}
+  <div className="flex items-center space-x-4 mr-4">
+    <Link
+      to="/login"
+      className="bg-[#0d80f2] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer"
+    >
+      Iniciar sesión
+    </Link>
+    <Link
+      to="/Registro"
+      className="bg-[#0d80f2] text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition cursor-pointer"
+    >
+      Crear cuenta
+    </Link>
+  </div>
+</div>
+
+
       </nav>
 
       {/* Hero Section */}

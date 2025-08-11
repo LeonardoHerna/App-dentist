@@ -8,6 +8,7 @@ import AccesosRapidos from "./AccesosRapidos";
 import PacientesPage from "./PacientesPage";
 import CitasPage from "./CitasPage";
 import ConfiguracionPage from "./ConfiguracionPage";
+import logo from "../assets/Logo.png"
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -23,8 +24,13 @@ const Dashboard = () => {
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
       <aside className="w-full md:w-64 bg-white shadow-md flex flex-col">
-        <div className="p-4 border-b">
-          <h2 className="text-2xl font-bold text-gray-800">DentistApp</h2>
+        <div className=" p-4 border-b flex flex-col justify-center items-center">
+              <img
+                src={logo}
+                alt={logo}
+                className="h-12 w-auto object-contain rounded-lg"
+              />
+          <h2 className="text-2xl font-bold text-gray-800">AgenDent</h2>
         </div>
         <nav className="mt-4 flex-1">
           <ul className="space-y-2">
