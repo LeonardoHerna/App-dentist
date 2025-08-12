@@ -1,12 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const Email = require("../Models/Email"); // Ajusta la ruta según dónde tengas el modelo
+const Email = require("../models/Email"); 
 
 // POST /api/email/register-email
 router.post("/register-email", async (req, res) => {
   const { email } = req.body;
 
-  // Validación simple
   if (!email || !email.includes("@")) {
     return res.status(400).json({ message: "Email inválido" });
   }
