@@ -1,167 +1,120 @@
 import React, { useState, useEffect } from "react";
-import SearchAndFilter from "./SearchAndFilter";
 
 const PacientesPage = () => {
-  const [pacientes, setPacientes] = useState([]);
-  const [search, setSearch] = useState("");
-  const [nuevoPaciente, setNuevoPaciente] = useState({
-    nombre: "",
-    telefono: "",
-    proximaCita: "",
-  });
+  const [paciente, setPaciente] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Cargar pacientes al montar el componente
   useEffect(() => {
-    const fetchPacientes = async () => {
+    const fetchPaciente = async () => {
       try {
-        const response = await fetch("https://app-dentist.onrender.com/api/pacientes");
-        const data = await response.json();
-        setPacientes(data);
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          "https://app-dentist.onrender.com/api/pacientes/miperfil",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (!response.ok) {
+          const text = await response.text();
+          console.error("Error en fetch:", response.status, text);
+          setPaciente(null);
+          return;
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          setPaciente(data);
+        } else {
+          const text = await response.text();
+          console.error("Respuesta inesperada (no JSON):", text);
+          setPaciente(null);
+        }
       } catch (error) {
-        console.error("Error al cargar pacientes:", error);
+        console.error("Error al cargar perfil:", error);
+        setPaciente(null);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchPacientes();
+
+    fetchPaciente();
   }, []);
 
-  // Función para agregar un paciente
-  const agregarPaciente = async () => {
-    if (nuevoPaciente.nombre && nuevoPaciente.telefono && nuevoPaciente.proximaCita) {
-      try {
-        const response = await fetch("https://app-dentist.onrender.com/api/pacientes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(nuevoPaciente),
-        });
-        const data = await response.json();
-        setPacientes((prev) => [...prev, data]);
-        setNuevoPaciente({ nombre: "", telefono: "", proximaCita: "" }); // Limpiar formulario
-      } catch (error) {
-        console.error("Error al agregar paciente:", error);
-      }
-    } else {
-      alert("Todos los campos son obligatorios");
-    }
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen text-gray-600">
+        Cargando perfil...
+      </div>
+    );
+  }
 
-  // Función para eliminar un paciente
-  const eliminarPaciente = async (id) => {
-    try {
-      await fetch(`https://app-dentist.onrender.com/api/pacientes/${id}`, { method: "DELETE" });
-      setPacientes((prev) => prev.filter((paciente) => paciente._id !== id));
-    } catch (error) {
-      console.error("Error al eliminar paciente:", error);
-    }
-  };
-
-  // Filtrar pacientes por nombre
-  const filteredPacientes = pacientes.filter((paciente) =>
-    paciente.nombre.toLowerCase().includes(search.toLowerCase())
-  );
+  if (!paciente) {
+    return (
+      <div className="text-center p-6 text-gray-600">
+        No se pudo cargar la información del paciente.
+      </div>
+    );
+  }
 
   return (
-    <div>
-  <h1 className="text-2xl font-bold text-gray-800">Pacientes</h1>
-  <SearchAndFilter search={search} setSearch={setSearch} />
+    <div className="max-w-3xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Mi Perfil</h1>
 
-  {/* Formulario para agregar un nuevo paciente */}
-  <div className="my-4 p-4 bg-gray-100 rounded-lg shadow">
-    <h2 className="text-lg font-bold">Agregar Nuevo Paciente</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <input
-        type="text"
-        placeholder="Nombre"
-        value={nuevoPaciente.nombre}
-        onChange={(e) => setNuevoPaciente({ ...nuevoPaciente, nombre: e.target.value })}
-        className="border rounded p-2 w-full"
-      />
-      <input
-        type="text"
-        placeholder="Teléfono"
-        value={nuevoPaciente.telefono}
-        onChange={(e) => setNuevoPaciente({ ...nuevoPaciente, telefono: e.target.value })}
-        className="border rounded p-2 w-full"
-      />
-      <input
-        type="date"
-        value={nuevoPaciente.proximaCita}
-        onChange={(e) => setNuevoPaciente({ ...nuevoPaciente, proximaCita: e.target.value })}
-        className="border rounded p-2 w-full"
-      />
-    </div>
-    <button
-      onClick={agregarPaciente}
-      className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full sm:w-auto"
-    >
-      ➕ Agregar Paciente
-    </button>
-  </div>
-
-  {/* Tabla para pantallas medianas en adelante */}
-  <div className="hidden md:block overflow-x-auto">
-    <table className="table-auto w-full mt-4 bg-white shadow-md rounded-lg">
-      <thead className="bg-gray-200">
-        <tr>
-          <th className="px-4 py-2">ID</th>
-          <th className="px-4 py-2">Nombre</th>
-          <th className="px-4 py-2">Teléfono</th>
-          <th className="px-4 py-2">Próxima Cita</th>
-          <th className="px-4 py-2">Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        {filteredPacientes.map((paciente) => (
-          <tr key={paciente._id} className="border-b">
-            <td className="px-4 py-2 break-all">{paciente._id}</td>
-            <td className="px-4 py-2">{paciente.nombre}</td>
-            <td className="px-4 py-2">{paciente.telefono}</td>
-            <td className="px-4 py-2">{paciente.proximaCita}</td>
-            <td className="px-4 py-2">
-              <button
-                onClick={() => eliminarPaciente(paciente._id)}
-                className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-              >
-                🗑️ Eliminar
-              </button>
-            </td>
-          </tr>
-        ))}
-        {filteredPacientes.length === 0 && (
-          <tr>
-            <td colSpan="5" className="text-center text-gray-500 py-4">
-              No se encontraron resultados.
-            </td>
-          </tr>
+      {/* Foto y datos principales */}
+      <div className="flex flex-col md:flex-row items-center bg-white p-6 rounded-lg shadow-md">
+        {paciente.foto ? (
+          <img
+            src={paciente.foto}
+            alt={paciente.nombre}
+            className="w-32 h-32 rounded-full object-cover mb-4 md:mb-0 md:mr-6"
+          />
+        ) : (
+          <div className="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 mb-4 md:mb-0 md:mr-6">
+            Sin Foto
+          </div>
         )}
-      </tbody>
-    </table>
-  </div>
 
-  {/* Tarjetas para móviles */}
-  <div className="block md:hidden space-y-4 mt-4">
-    {filteredPacientes.map((paciente) => (
-      <div key={paciente._id} className="bg-white shadow-md rounded-lg p-4">
-        <p className="text-sm text-gray-600"><strong>ID:</strong> {paciente._id}</p>
-        <p className="text-base"><strong>Nombre:</strong> {paciente.nombre}</p>
-        <p className="text-base"><strong>Teléfono:</strong> {paciente.telefono}</p>
-        <p className="text-base"><strong>Próxima Cita:</strong> {paciente.proximaCita}</p>
-        <button
-          onClick={() => eliminarPaciente(paciente._id)}
-          className="mt-2 bg-red-500 text-white px-4 py-1 rounded hover:bg-red-600 w-full"
-        >
-          🗑️ Eliminar
-        </button>
+        <div>
+          <p className="text-xl font-semibold">{paciente.nombre}</p>
+          {paciente.email && <p className="text-gray-600">{paciente.email}</p>}
+          <p className="text-gray-600">Teléfono: {paciente.telefono}</p>
+          {paciente.proximaCita && (
+            <p className="text-gray-600">
+              Próxima cita: {new Date(paciente.proximaCita).toLocaleDateString()}
+            </p>
+          )}
+          {paciente.tratamiento && (
+            <p className="text-gray-600">Tratamiento: {paciente.tratamiento}</p>
+          )}
+        </div>
       </div>
-    ))}
-    {filteredPacientes.length === 0 && (
-      <p className="text-center text-gray-500">No se encontraron resultados.</p>
-    )}
-  </div>
-</div>
 
+      {/* Historial de tratamientos */}
+      {paciente.historial && paciente.historial.length > 0 && (
+        <div className="mt-6 bg-white p-6 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold mb-4 text-gray-800">Historial de Tratamientos</h2>
+          <ul className="space-y-3">
+            {paciente.historial.map((item, index) => (
+              <li key={index} className="border-b pb-2">
+                <p className="text-gray-700">
+                  <span className="font-semibold">
+                    {new Date(item.fecha).toLocaleDateString()}:
+                  </span>{" "}
+                  {item.descripcion}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {!paciente.historial || paciente.historial.length === 0 ? (
+        <p className="mt-6 text-gray-600 text-center">No hay historial de tratamientos.</p>
+      ) : null}
+    </div>
   );
 };
 
 export default PacientesPage;
-
-

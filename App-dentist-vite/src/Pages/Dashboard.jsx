@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route, NavLink, useNavigate } from "react-router-dom";
+import { HiMenu, HiX } from "react-icons/hi";
 import Indicadores from "./Indicadores";
 import GraficaCitas from "./GraficaCitas";
 import CalendarioCitas from "./CalendarioCitas";
@@ -8,35 +9,56 @@ import AccesosRapidos from "./AccesosRapidos";
 import PacientesPage from "./PacientesPage";
 import CitasPage from "./CitasPage";
 import ConfiguracionPage from "./ConfiguracionPage";
-import logo from "../assets/Logo.png"
+import logo from "../assets/Logo.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleLogout = () => {
- 
     localStorage.removeItem("token");
-    // Redirigir al landing page
     navigate("/");
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen bg-gray-100 relative">
+      {/* Botón hamburguesa (hasta lg inclusive) */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white shadow-md rounded-md"
+        onClick={() => setMenuOpen(!menuOpen)}
+      >
+        {menuOpen ? <HiX size={24} /> : <HiMenu size={24} />}
+      </button>
+
+      {/* Overlay claro */}
+      {menuOpen && (
+        <div
+          className="fixed inset-0 shadow-lg bg-transparent lg:hidden"
+          onClick={() => setMenuOpen(false)}
+        ></div>
+      )}
+
       {/* Sidebar */}
-      <aside className="w-full md:w-64 bg-white shadow-md flex flex-col">
-        <div className=" p-4 border-b flex flex-col justify-center items-center">
-              <img
-                src={logo}
-                alt={logo}
-                className="h-12 w-auto object-contain rounded-lg"
-              />
+      <aside
+        className={`fixed inset-y-0 left-0 transform ${
+          menuOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-white shadow-md flex flex-col z-40`}
+      >
+        <div className="p-4 border-b flex flex-col justify-center items-center">
+          <img
+            src={logo}
+            alt="Logo"
+            className="h-12 w-auto object-contain rounded-lg"
+          />
           <h2 className="text-2xl font-bold text-gray-800">AgenDent</h2>
         </div>
+
         <nav className="mt-4 flex-1">
           <ul className="space-y-2">
             <li>
               <NavLink
                 to="/dashboard"
+                onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive
@@ -51,6 +73,7 @@ const Dashboard = () => {
             <li>
               <NavLink
                 to="/dashboard/pacientes"
+                onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive
@@ -65,6 +88,7 @@ const Dashboard = () => {
             <li>
               <NavLink
                 to="/dashboard/citas"
+                onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive
@@ -79,6 +103,7 @@ const Dashboard = () => {
             <li>
               <NavLink
                 to="/dashboard/configuracion"
+                onClick={() => setMenuOpen(false)}
                 className={({ isActive }) =>
                   `block px-4 py-2 rounded-md ${
                     isActive
@@ -93,7 +118,6 @@ const Dashboard = () => {
           </ul>
         </nav>
 
-        {/* Botón Cerrar Sesión */}
         <div className="p-4 border-t">
           <button
             onClick={handleLogout}
@@ -105,7 +129,7 @@ const Dashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 lg:ml-64">
         <Routes>
           <Route
             path="/"
