@@ -1,10 +1,16 @@
 const express = require("express");
 const router = express.Router();
-const Paciente = require("../models/pacientesModels"); // Modelo de MongoDB
+const Paciente = require("../models/pacientesModels");
+const authMiddleware = require("../Controllers/authMiddleware"); 
 
-// Obtener todos los pacientes
-router.get("/", async (req, res) => {
+// =========================
+// Obtener todos los pacientes (solo admin)
+// =========================
+router.get("/", authMiddleware, async (req, res) => {
   try {
+    if (req.user.rol !== "admin") {
+      return res.status(403).json({ error: "Acceso denegado" });
+    }
     const pacientes = await Paciente.find();
     res.json(pacientes);
   } catch (error) {
@@ -12,11 +18,57 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Agregar un nuevo paciente
-router.post("/", async (req, res) => {
-  const { nombre, telefono, proximaCita } = req.body;
+// =========================
+// Obtener perfil del paciente autenticado
+// =========================
+router.get("/miperfil", authMiddleware, async (req, res) => {
   try {
-    const nuevoPaciente = new Paciente({ nombre, telefono, proximaCita });
+    let paciente = await Paciente.findOne({ usuarioId: req.user.id });
+
+    // Si no existe, devolvemos un objeto vacío en vez de 404
+    if (!paciente) {
+      paciente = {
+        nombre: "",
+        email: "",
+        telefono: "",
+        foto: "",
+        proximaCita: null,
+        tratamiento: "",
+        historial: [],
+        usuarioId: req.user.id,
+      };
+    }
+
+    res.json(paciente);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener el perfil del paciente" });
+  }
+});
+
+// =========================
+// Agregar un nuevo paciente
+// =========================
+router.post("/", authMiddleware, async (req, res) => {
+  const { nombre, email, telefono, foto, proximaCita, tratamiento, historial } = req.body;
+
+  try {
+    // Evitar duplicados por usuario
+    const existe = await Paciente.findOne({ usuarioId: req.user.id });
+    if (existe) {
+      return res.status(400).json({ error: "El perfil ya existe" });
+    }
+
+    const nuevoPaciente = new Paciente({
+      nombre,
+      email,
+      telefono,
+      foto,
+      proximaCita,
+      tratamiento,
+      historial,
+      usuarioId: req.user.id,
+    });
+
     await nuevoPaciente.save();
     res.status(201).json(nuevoPaciente);
   } catch (error) {
@@ -24,9 +76,14 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Eliminar un paciente
-router.delete("/:id", async (req, res) => {
+// =========================
+// Eliminar paciente (solo admin)
+// =========================
+router.delete("/:id", authMiddleware, async (req, res) => {
   try {
+    if (req.user.rol !== "admin") {
+      return res.status(403).json({ error: "Acceso denegado" });
+    }
     await Paciente.findByIdAndDelete(req.params.id);
     res.json({ message: "Paciente eliminado correctamente" });
   } catch (error) {

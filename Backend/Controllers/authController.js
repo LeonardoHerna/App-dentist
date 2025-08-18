@@ -9,7 +9,7 @@ const generateToken = (id, rol) => {
 
 // Registro de usuario
 exports.registerUser = async (req, res) => {
-  const { name, email, password, rol = "user" } = req.body;
+  const { name, email, password, rol } = req.body;
 
   try {
     console.log("Datos recibidos en /register:", req.body);
