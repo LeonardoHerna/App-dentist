@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const PacientesPage = () => {
   const [paciente, setPaciente] = useState(null);
@@ -8,31 +9,27 @@ const PacientesPage = () => {
     const fetchPaciente = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch(
+
+        const response = await axios.get(
           "https://app-dentist.onrender.com/api/pacientes/miperfil",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        if (!response.ok) {
-          const text = await response.text();
-          console.error("Error en fetch:", response.status, text);
-          setPaciente(null);
-          return;
-        }
-
-        const contentType = response.headers.get("content-type");
-        if (contentType && contentType.includes("application/json")) {
-          const data = await response.json();
-          setPaciente(data);
-        } else {
-          const text = await response.text();
-          console.error("Respuesta inesperada (no JSON):", text);
-          setPaciente(null);
-        }
+        setPaciente(response.data);
       } catch (error) {
-        console.error("Error al cargar perfil:", error);
+        if (error.response) {
+          console.error(
+            "Error en fetch:",
+            error.response.status,
+            error.response.data
+          );
+        } else if (error.request) {
+          console.error("Sin respuesta del servidor:", error.request);
+        } else {
+          console.error("Error al cargar perfil:", error.message);
+        }
         setPaciente(null);
       } finally {
         setLoading(false);
