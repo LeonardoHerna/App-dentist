@@ -23,6 +23,8 @@ app.use("/api/pacientes", require("./Routes/pacientesRoutes"));
 app.use("/api/citas", require("./Routes/citasRoutes"));
 app.use("/api/email", require("./Routes/emailRoutes"));
 app.use("/api/emailCta", emailRoutes);
+app.use("/api/tratamientos", require("./Routes/tratamientosRoutes"));
+
 
 
 const PORT = process.env.PORT || 5000;
