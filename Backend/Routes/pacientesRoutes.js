@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const User = require("../models/user"); 
 const Paciente = require("../models/pacientesModels");
 const authMiddleware = require("../Controllers/authMiddleware"); 
 
@@ -23,21 +24,24 @@ router.get("/", authMiddleware, async (req, res) => {
 // =========================
 router.get("/miperfil", authMiddleware, async (req, res) => {
   try {
-    let paciente = await Paciente.findOne({ usuarioId: req.user.id });
+    const paciente = await Paciente.findOne({ usuarioId: req.user.id });
+    const user = await User.findById(req.user.id); // obtenemos info de usuario
 
-    // Si no existe, devolvemos un objeto vacío en vez de 404
     if (!paciente) {
-      paciente = {
+      return res.json({
         nombre: "",
-        email: "",
+        email: user?.email || "",
         telefono: "",
-        foto: "",
+        foto: user?.profileImage || paciente?.foto || "",
         proximaCita: null,
         tratamiento: "",
         historial: [],
         usuarioId: req.user.id,
-      };
+      });
     }
+
+    // Si existe paciente, usamos su foto, sino la del user
+    paciente.foto = paciente.foto || user?.profileImage || "";
 
     res.json(paciente);
   } catch (error) {

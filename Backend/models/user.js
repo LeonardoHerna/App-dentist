@@ -6,6 +6,19 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   rol: { type: String, enum: ["admin", "user"], default: "user" },
+  
+  // Campos agregados para funcionalides nuevas
+  profileImage: { type: String, default: "" },
+  preferences: {
+    notificaciones: {
+      correo: { type: Boolean, default: true },
+      sms: { type: Boolean, default: false },
+      push: { type: Boolean, default: true },
+      recordatorios: { type: Boolean, default: true },
+    },
+    modoOscuro: { type: Boolean, default: false },
+    idioma: { type: String, default: "es" },
+  },
 });
 
 // Hash de contraseña antes de guardar
@@ -16,4 +29,6 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.models.User || mongoose.model("User", userSchema);
+
+
