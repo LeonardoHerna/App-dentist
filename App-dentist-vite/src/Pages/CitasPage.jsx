@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { Transition } from "@headlessui/react";
 import SearchAndFilter from "./SearchAndFilter";
+import API from "../Services/api";
 
 const CitasPage = () => {
   const [search, setSearch] = useState("");
@@ -30,29 +29,17 @@ const CitasPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
         // 🔹 Traer citas
-        const resCitas = await axios.get(
-          "https://app-dentist.onrender.com/api/citas",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setCitas(resCitas.data);
-      
+        const resCitas = await API.get("/citas");
+        setCitas(resCitas.data.citas || []); // asegurar que sea un array
+
         // 🔹 Traer tratamientos activos
-        const resTratamientos = await axios.get(
-          "https://app-dentist.onrender.com/api/tratamientos",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setTratamientos(resTratamientos.data);
+        const resTratamientos = await API.get("/tratamientos");
+        setTratamientos(resTratamientos.data || []);
 
         // 🔹 Traer historial clínico
-        const resHistorial = await axios.get(
-          "https://app-dentist.onrender.com/api/citas/historial",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setHistorial(resHistorial.data);
+        const resHistorial = await API.get("/citas/historial");
+        setHistorial(resHistorial.data.historial || []);
       } catch (error) {
         console.error("Error al cargar datos:", error);
       }
@@ -71,16 +58,9 @@ const CitasPage = () => {
     currentPage * itemsPerPage
   );
 
-
   const handleAddCita = async () => {
     try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-      const response = await axios.post(
-        "https://app-dentist.onrender.com/api/citas",
-        newCita,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await API.post("/citas", newCita);
       setCitas((prev) => [...prev, response.data]);
       setShowModal(false);
       setNewCita({ paciente: "", fecha: "", hora: "", estado: "Pendiente" });
@@ -98,10 +78,8 @@ const CitasPage = () => {
 
   return (
     <div>
-      {/* ✅ Título */}
       <h1 className="text-2xl font-bold text-gray-800">Mis Citas</h1>
 
-      {/* ✅ Sección de citas con buscador */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mt-4">
         <SearchAndFilter
           search={search}
@@ -118,7 +96,7 @@ const CitasPage = () => {
         </button>
       </div>
 
-      {/* ✅ Tabla Desktop */}
+      {/* Tabla Desktop */}
       <div className="hidden md:block mt-4">
         <table className="table-auto w-full bg-white shadow-md rounded-lg">
           <thead className="bg-gray-200">
@@ -149,10 +127,7 @@ const CitasPage = () => {
             ))}
             {filteredCitas.length === 0 && (
               <tr>
-                <td
-                  colSpan="4"
-                  className="text-center py-4 text-gray-500"
-                >
+                <td colSpan="4" className="text-center py-4 text-gray-500">
                   No se encontraron citas.
                 </td>
               </tr>
@@ -161,7 +136,7 @@ const CitasPage = () => {
         </table>
       </div>
 
-      {/* ✅ Cards móviles */}
+      {/* Cards móviles */}
       <div className="block md:hidden mt-4 space-y-4">
         {paginatedCitas.length === 0 && (
           <p className="text-center text-gray-500">
@@ -194,7 +169,7 @@ const CitasPage = () => {
         ))}
       </div>
 
-      {/* ✅ Tratamientos */}
+      {/* Tratamientos */}
       <h2 className="text-xl font-bold mt-8 mb-2 text-gray-800">
         Tratamientos Activos
       </h2>
@@ -217,7 +192,7 @@ const CitasPage = () => {
         )}
       </div>
 
-      {/* ✅ Historial clínico */}
+      {/* Historial clínico */}
       <h2 className="text-xl font-bold mt-8 mb-2 text-gray-800">
         Historial Clínico
       </h2>
@@ -242,7 +217,7 @@ const CitasPage = () => {
         )}
       </div>
 
-      {/* ✅ Modal para agregar citas */}
+      {/* Modal para agregar citas */}
       <Transition
         show={showModal}
         enter="transition duration-200"
@@ -330,4 +305,3 @@ const CitasPage = () => {
 };
 
 export default CitasPage;
-
